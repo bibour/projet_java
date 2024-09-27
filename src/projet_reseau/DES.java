@@ -9,15 +9,17 @@ public class DES {
 	private static final int nb_sous_bloc = 32;
 	private static final int nb_ronde = 1;
 	private static final int[] tab_decalage = {1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1};
-	private static final int[] perm_initiale = new int[64];
-	private static final int[][] pc1 = new int[28][28];
-	private static final int[] pc2 = new int[48];
-	private static final int[] s = new int[32];
+	private static final int[] perm_initiale = {57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7,56,48,40,32,24,16,8,0,58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6};
+	private static final int[][] pc1 = {{56,48,40,32,24,16,8,0,5,0,57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35},{62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,60,52,44,36,28,20,12,4,27,19,11,3}};
+
+	public int[] PC2 = {13,16,10,23,0,4,2,27,14,5,20,9,22,18,11,3,25,7,15,6,26,19,12,1,40,51,30,36,46,54,29,39,50,44,32,47,43,48,38,55,33,52,45,41,49,35,28,31};
+	
+	private static final int[][] s = {{14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7}, {0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8}, {4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0}, {15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13}};
 	private static final int[] e = new int[48];
 	
 	
 	private int[] masterKey = new int[64];
-	private ArrayList<Integer> tab_cles;
+	private ArrayList<int[]> tab_cles;
 	
 	
 	public DES() {
@@ -25,14 +27,32 @@ public class DES {
 		for (int i=0; i<this.masterKey.length; i++) {
 			this.masterKey[i]=ran.nextInt(2);
 		}
-		tab_cles = new ArrayList<Integer>();
+		tab_cles = new ArrayList<int[]>();
 		
 	}
 	
-	public int[] crypte() {
+	public int[] stringToBits(String message) {
+		byte[] bytes = message.getBytes();
+		int[] bit = new int[64];
+		int i = 0;
+		for (byte b : bytes) {
+			int val = b;
+			for (int j=0; j<8; j++) {
+				if (i<64) {
+				bit[i] = (val & 128) == 0 ? 0 : 1;
+				val <<= 1;
+				i ++;
+				}
+			}
+		}
 		
+		return bit;
 	}
+	
+	
 	public static void main(String[] args) {
 		DES d = new DES();
+		
+		int[] test = d.stringToBits("lala");
 	}
 }
