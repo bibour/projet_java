@@ -1,6 +1,8 @@
 package projet_reseau;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Random;
 
 public class DES {
@@ -12,7 +14,7 @@ public class DES {
 	private static final int[] perm_initiale = {57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7,56,48,40,32,24,16,8,0,58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6};
 	private static final int[][] pc1 = {{56,48,40,32,24,16,8,0,5,0,57,49,41,33,25,17,9,1,58,50,42,34,26,18,10,2,59,51,43,35},{62,54,46,38,30,22,14,6,61,53,45,37,29,21,13,5,60,52,44,36,28,20,12,4,27,19,11,3}};
 
-	public int[] PC2 = {13,16,10,23,0,4,2,27,14,5,20,9,22,18,11,3,25,7,15,6,26,19,12,1,40,51,30,36,46,54,29,39,50,44,32,47,43,48,38,55,33,52,45,41,49,35,28,31};
+	private int[] PC2 = {13,16,10,23,0,4,2,27,14,5,20,9,22,18,11,3,25,7,15,6,26,19,12,1,40,51,30,36,46,54,29,39,50,44,32,47,43,48,38,55,33,52,45,41,49,35,28,31};
 	
 	private static final int[][] s = {{14,4,13,1,2,15,11,8,3,10,6,12,5,9,0,7}, {0,15,7,4,14,2,13,1,10,6,12,11,9,5,3,8}, {4,1,14,8,13,6,2,11,15,12,9,7,3,10,5,0}, {15,12,8,2,4,9,1,7,5,11,3,14,10,0,6,13}};
 	private static final int[] e = new int[48];
@@ -49,10 +51,57 @@ public class DES {
 		return bit;
 	}
 	
+	public String bitToString(int[] bloc) {
+		byte[] b = new byte[8];
+		
+		for (int i=0; i<8; i++) {
+			int somme = 0;
+			for (int j=0; j<8; j++) {
+				somme += bloc[i*8+j]*(Math.pow(2,(7-j)));
+				
+			}
+			
+			b[i] = (byte) somme;
+		}
+		String s = new String(b, StandardCharsets.UTF_8);
+
+		
+		return s;
+		
+	}
+	
+	public int[] genereMasterKey() {
+		int[] mk = new int[64];
+		Random ran = new Random();
+		for (int i=0; i<mk.length; i++) {
+			mk[i] = ran.nextInt(1);
+		}
+		return mk;
+	}
+	
+	public int[] permutation(int[] tab_permutation, int[] bloc) {
+		int longueur = tab_permutation.length;
+		int[] perm = new int[longueur];
+		for (int i=0; i<longueur; i++) {
+			perm[i] = bloc[tab_permutation[i]];
+		}
+		return perm;
+	}
+	
+	public int[] invPermutation(int[] tab_permutation, int[] bloc) {
+		int longueur = tab_permutation.length;
+		int[] perm = new int[longueur];
+		
+	}
+	
 	
 	public static void main(String[] args) {
 		DES d = new DES();
 		
 		int[] test = d.stringToBits("lala");
+		for (int i=0; i<test.length; i++) {
+			System.out.print(test[i]);
+		}
+		System.out.println(d.bitToString(test));
 	}
 }
